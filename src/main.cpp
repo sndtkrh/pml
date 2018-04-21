@@ -4,22 +4,23 @@
 
 #include "formula.hpp"
 #include "propositional_logic.hpp"
+#include "parser.hpp"
+
 using namespace pml;
 
 int main() {
-  std::string fml = "[](p->q)->([]p->[]q)";
-  Var p("p");
-  Var q("q");
-  Not np(&p);
-  Imply q_imply_np(&q, &np);
-  Imply p_imply_p(&np, &np);
+  std::string modal_fml = "[](p->q)->([]p->[]q)";
+  std::string f0 = "(p->q->r)->(p->q)->(p->r)";
+  std::string f1 = "((~p\\/(p/\\q))->(p->q))/\\((p->q)->(~p\\/(p/\\q)))";
+  std::string f2 = "p/\\q";
+  std::string f3 = "~p";
 
+  Formula * fml = parse(f1);
   auto taut = [](Formula * fml) {
     if( is_tautology(fml) ){
       return "tautology";
     }
     return "not tautology";
   };
-  std::cout << q_imply_np.to_string() << " is " << taut(&q_imply_np) << std::endl;
-  std::cout << p_imply_p.to_string() << " is " << taut(&p_imply_p) << std::endl;
+  std::cout << fml->to_string() << " is " << taut(fml) << std::endl;
 }

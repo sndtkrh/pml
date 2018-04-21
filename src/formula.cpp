@@ -30,4 +30,24 @@ namespace pml {
   std::vector<Formula *> Imply::get_subformulas() const {
     return {lhs, rhs};
   }
+
+  And::And(Formula * lhs, Formula * rhs) : lhs(lhs), rhs(rhs) {
+    op = operators::Imply;
+  }
+  std::string And::to_string() const {
+    return "(" + lhs->to_string() + "/\\" + rhs->to_string() + ")";
+  }
+  std::vector<Formula *> And::get_subformulas() const {
+    return {lhs, rhs};
+  }
+
+  Or::Or(Formula * lhs, Formula * rhs) : lhs(lhs), rhs(rhs) {
+    op = operators::Imply;
+  }
+  std::string Or::to_string() const {
+    return "(" + lhs->to_string() + "\\/" + rhs->to_string() + ")";
+  }
+  std::vector<Formula *> Or::get_subformulas() const {
+    return {lhs, rhs};
+  }
 }

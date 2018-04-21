@@ -42,6 +42,22 @@ namespace pml {
     std::string to_string() const;
     std::vector<Formula *> get_subformulas() const;
   };
+
+  struct And : Formula {
+    Formula * lhs, * rhs;
+
+    And(Formula * lhs, Formula * rhs);
+    std::string to_string() const;
+    std::vector<Formula *> get_subformulas() const;
+  };
+
+  struct Or : Formula {
+    Formula * lhs, * rhs;
+
+    Or(Formula * lhs, Formula * rhs);
+    std::string to_string() const;
+    std::vector<Formula *> get_subformulas() const;
+  };
 }
 
 #endif
