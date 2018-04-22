@@ -72,7 +72,7 @@ namespace pml {
         std::vector<Formula *> gsub = g->get_subformulas();
         if( fsub.size() == gsub.size() ) {
           for(std::size_t i = 0; i < fsub.size(); i++) {
-            ret = ret && (fsub[i] == gsub[i]);
+            ret = ret && same(fsub[i], gsub[i]);
           }
         } else {
           ret = false;
