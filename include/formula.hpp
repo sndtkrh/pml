@@ -20,6 +20,8 @@ namespace pml {
     virtual std::string to_string() const = 0;
     virtual std::vector<Formula *> get_subformulas() const = 0;
   };
+  bool same(const Formula * f, const Formula * g);
+  Formula * copy(const Formula * f);
 
   class Var : public Formula {
   public:
@@ -48,6 +50,7 @@ namespace pml {
     std::string to_string() const;
     std::vector<Formula *> get_subformulas() const;
   };
+
 }
 
 #endif

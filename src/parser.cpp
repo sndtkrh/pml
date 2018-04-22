@@ -33,7 +33,8 @@ namespace pml {
     if( match("(", str, p) ) {
       fml = formula(str, p);
       skip_spaces(str, p);
-      assert( match(")", str, p) );
+      bool endp = match(")", str, p);
+      assert( endp );
     } else if( match(to_string(operators::Not), str, p) ) {
       fml = new Not( subformula(str, p) );
     } else {
