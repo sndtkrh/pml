@@ -11,15 +11,18 @@ namespace pml {
     Not, Diamond, Box, // unary
     Imply, And, Or // binary
   };
+  const char * to_string(const operators & op);
 
-  struct Formula {
+  class Formula {
+  public:
     operators op;
 
     virtual std::string to_string() const = 0;
     virtual std::vector<Formula *> get_subformulas() const = 0;
   };
 
-  struct Var : Formula {
+  class Var : public Formula {
+  public:
     std::string varname;
 
     Var(std::string varname);
@@ -27,7 +30,8 @@ namespace pml {
     std::vector<Formula *> get_subformulas() const;
   };
 
-  struct Not : Formula {
+  class Not : public Formula {
+  public:
     Formula * subformula;
 
     Not(Formula * subformula);
@@ -35,26 +39,12 @@ namespace pml {
     std::vector<Formula *> get_subformulas() const;
   };
 
-  struct Imply : Formula {
+
+  template <operators Op>
+  class BinOp : public Formula {
+  public:
     Formula * lhs, * rhs;
-
-    Imply(Formula * lhs, Formula * rhs);
-    std::string to_string() const;
-    std::vector<Formula *> get_subformulas() const;
-  };
-
-  struct And : Formula {
-    Formula * lhs, * rhs;
-
-    And(Formula * lhs, Formula * rhs);
-    std::string to_string() const;
-    std::vector<Formula *> get_subformulas() const;
-  };
-
-  struct Or : Formula {
-    Formula * lhs, * rhs;
-
-    Or(Formula * lhs, Formula * rhs);
+    BinOp(Formula * lhs, Formula * rhs);
     std::string to_string() const;
     std::vector<Formula *> get_subformulas() const;
   };

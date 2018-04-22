@@ -11,30 +11,30 @@ namespace pml {
   }
 
   Formula * formula(const std::string & str, std::size_t & p) {
-    std::cout << "formula " << p << std::endl;
+    // std::cout << "formula " << p << std::endl;
     skip_spaces(str, p);
     Formula * fml = subformula(str, p);
     skip_spaces(str, p);
     if( end(str, p) ) return fml;
-    if( match("->", str, p) ) {
-      fml = new Imply(fml, formula(str, p));
-    } else if( match("\\/", str, p) ) {
-      fml = new Or(fml, formula(str, p));
-    } else if( match("/\\", str, p) ) {
-      fml = new And(fml, formula(str, p));
+    if( match(to_string(operators::Imply), str, p) ) {
+      fml = new BinOp<operators::Imply>(fml, formula(str, p));
+    } else if( match(to_string(operators::Or), str, p) ) {
+      fml = new BinOp<operators::Or>(fml, formula(str, p));
+    } else if( match(to_string(operators::And), str, p) ) {
+      fml = new BinOp<operators::And>(fml, formula(str, p));
     }
     return fml;
   }
 
   Formula * subformula(const std::string & str, std::size_t & p) {
-    std::cout << "subformula " << p << std::endl;
+    // std::cout << "subformula " << p << std::endl;
     skip_spaces(str, p);
     Formula * fml = nullptr;
     if( match("(", str, p) ) {
       fml = formula(str, p);
       skip_spaces(str, p);
       assert( match(")", str, p) );
-    } else if( match("~", str, p) ) {
+    } else if( match(to_string(operators::Not), str, p) ) {
       fml = new Not( subformula(str, p) );
     } else {
       fml = var(str, p);
@@ -44,7 +44,7 @@ namespace pml {
   }
 
   Formula * var(const std::string & str, std::size_t & p) {
-    std::cout << "var " << p << std::endl;
+    // std::cout << "var " << p << std::endl;
     skip_spaces(str, p);
     std::string varname = "";
     for(; p < str.size() && is_lowercase(str[p]); p++) {

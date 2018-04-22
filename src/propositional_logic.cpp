@@ -1,4 +1,5 @@
 #include "propositional_logic.hpp"
+#include <iostream>
 #include <cassert>
 #include <algorithm>
 #include <iterator>
@@ -53,34 +54,45 @@ namespace pml {
 
   bool eval(const Formula * fml, std::map<std::string, bool> & valuation){
     assert(is_propositional_formula(fml));
+    bool ret = false;
     switch(fml->op){
       case operators::NonOperator :
-        return valuation[fml->to_string()];
+        ret = valuation[fml->to_string()];
+        break;
       case operators::Top :
-        return true;
+        ret = true;
+        break;
       case operators::Bottom :
-        return false;
+        ret = false;
+        break;
       case operators::Not :
-        return !eval(fml->get_subformulas()[0], valuation);
+        ret = !eval(fml->get_subformulas()[0], valuation);
+        break;
       case operators::Imply :
         {
           auto fmls = fml->get_subformulas();
           bool v = eval(fmls[0], valuation);
-          return (!v) || (v && eval(fmls[1], valuation));
+          ret = (!v) || (v && eval(fmls[1], valuation));
+          break;
         }
       case operators::And :
         {
           auto fmls = fml->get_subformulas();
-          return eval(fmls[0], valuation) && eval(fmls[0], valuation);
+          ret = eval(fmls[0], valuation) && eval(fmls[1], valuation);
+          break;
         }
       case operators::Or :
         {
           auto fmls = fml->get_subformulas();
-          return eval(fmls[0], valuation) || eval(fmls[1], valuation);
+          ret = eval(fmls[0], valuation) || eval(fmls[1], valuation);
+          break;
         }
-      default :
-        return false;
+      case operators::Diamond :
+      case operators::Box :
+        assert(false);
     }
+    // std::cout << fml->to_string() << " is " << ret << std::endl;
+    return ret;
   }
 
   bool is_tautology(const Formula * fml) {
@@ -91,8 +103,12 @@ namespace pml {
       valuation[p] = false;
       index.push_back(p);
     }
-    bool ans = eval(fml, valuation);
+    bool ans = true;
     for(std::size_t i = 0; i < (static_cast<std::size_t>(1) << phi.size()); i++) {
+      ans = ans && eval(fml, valuation);
+      if( !ans ){
+        break;
+      }
       for(std::size_t j = 0; j < phi.size(); j++) {
         if(valuation[index[j]]) {
           valuation[index[j]] = false;
@@ -101,8 +117,6 @@ namespace pml {
           break;
         }
       }
-      ans = ans && eval(fml, valuation);
-      if( !ans ) break;
     }
     return ans;
   }

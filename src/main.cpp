@@ -11,11 +11,10 @@ using namespace pml;
 int main() {
   std::string modal_fml = "[](p->q)->([]p->[]q)";
   std::string f0 = "(p->q->r)->(p->q)->(p->r)";
-  std::string f1 = "((~p\\/(p/\\q))->(p->q))/\\((p->q)->(~p\\/(p/\\q)))";
-  std::string f2 = "p/\\q";
-  std::string f3 = "~p";
+  std::string f1 = "(( ~p\\/(p/\\q) )->(p->q)) /\\ ((p->q)->( ~p\\/(p/\\q) ))";
+  std::string f2 = "( ~p\\/(p/\\q) ) -> (p->q)";
 
-  Formula * fml = parse(f1);
+  Formula * fml = parse(f2);
   auto taut = [](Formula * fml) {
     if( is_tautology(fml) ){
       return "tautology";

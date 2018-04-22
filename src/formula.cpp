@@ -1,6 +1,30 @@
 #include "formula.hpp"
 
 namespace pml {
+  const char * to_string(const operators & op) {
+    switch(op){
+      case(operators::NonOperator) :
+        return "";
+      case(operators::Top) :
+        return "T";
+      case(operators::Bottom) :
+        return "F";
+      case(operators::Not) :
+        return "~";
+      case(operators::Box) :
+        return "[]";
+      case(operators::Diamond) :
+        return "<>";
+      case(operators::Imply) :
+        return "->";
+      case(operators::And) :
+        return "/\\";
+      case(operators::Or) :
+        return "\\/";
+    }
+    return "";
+  }
+
   Var::Var(std::string varname) : varname(varname) {
     op = operators::NonOperator;
   }
@@ -21,33 +45,20 @@ namespace pml {
     return {subformula};
   }
 
-  Imply::Imply(Formula * lhs, Formula * rhs) : lhs(lhs), rhs(rhs) {
-    op = operators::Imply;
+  template <operators Op>
+  BinOp<Op>::BinOp(Formula * lhs, Formula * rhs) : lhs(lhs), rhs(rhs) {
+    op = Op;
   }
-  std::string Imply::to_string() const {
-    return "(" + lhs->to_string() + "->" + rhs->to_string() + ")";
+  template <operators Op>
+  std::string BinOp<Op>::to_string() const {
+    return "(" + lhs->to_string() + pml::to_string(op) + rhs->to_string() + ")";
   }
-  std::vector<Formula *> Imply::get_subformulas() const {
+  template <operators Op>
+  std::vector<Formula *> BinOp<Op>::get_subformulas() const {
     return {lhs, rhs};
   }
 
-  And::And(Formula * lhs, Formula * rhs) : lhs(lhs), rhs(rhs) {
-    op = operators::Imply;
-  }
-  std::string And::to_string() const {
-    return "(" + lhs->to_string() + "/\\" + rhs->to_string() + ")";
-  }
-  std::vector<Formula *> And::get_subformulas() const {
-    return {lhs, rhs};
-  }
-
-  Or::Or(Formula * lhs, Formula * rhs) : lhs(lhs), rhs(rhs) {
-    op = operators::Imply;
-  }
-  std::string Or::to_string() const {
-    return "(" + lhs->to_string() + "\\/" + rhs->to_string() + ")";
-  }
-  std::vector<Formula *> Or::get_subformulas() const {
-    return {lhs, rhs};
-  }
+  template class BinOp<operators::Imply>;
+  template class BinOp<operators::And>;
+  template class BinOp<operators::Or>;
 }
