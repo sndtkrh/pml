@@ -2,11 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "formula.hpp"
-#include "propositional_logic.hpp"
-#include "parser.hpp"
-#include "rule.hpp"
-
+#include "pml.hpp"
 using namespace pml;
 
 int main() {

@@ -16,7 +16,6 @@ namespace pml {
   class Formula {
   public:
     operators op;
-
     virtual std::string to_string() const = 0;
     virtual std::vector<Formula *> get_subformulas() const = 0;
   };
@@ -26,21 +25,19 @@ namespace pml {
   class Var : public Formula {
   public:
     std::string varname;
-
     Var(std::string varname);
     std::string to_string() const;
     std::vector<Formula *> get_subformulas() const;
   };
 
-  class Not : public Formula {
+  template <operators Op>
+  class UnOp : public Formula {
   public:
     Formula * subformula;
-
-    Not(Formula * subformula);
+    UnOp(Formula * subformula);
     std::string to_string() const;
     std::vector<Formula *> get_subformulas() const;
   };
-
 
   template <operators Op>
   class BinOp : public Formula {

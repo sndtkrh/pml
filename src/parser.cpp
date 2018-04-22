@@ -36,7 +36,7 @@ namespace pml {
       bool endp = match(")", str, p);
       assert( endp );
     } else if( match(to_string(operators::Not), str, p) ) {
-      fml = new Not( subformula(str, p) );
+      fml = new UnOp<operators::Not>( subformula(str, p) );
     } else {
       fml = var(str, p);
     }

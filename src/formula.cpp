@@ -26,15 +26,21 @@ namespace pml {
     return {};
   }
 
-  Not::Not(Formula * subformula) : subformula(subformula) {
-    op = operators::Not;
+  template <operators Op>
+  UnOp<Op>::UnOp(Formula * subformula) : subformula(subformula) {
+    op = Op;
   }
-  std::string Not::to_string() const {
+  template <operators Op>
+  std::string UnOp<Op>::to_string() const {
     return "~" + subformula->to_string();
   }
-  std::vector<Formula *> Not::get_subformulas() const {
+  template <operators Op>
+  std::vector<Formula *> UnOp<Op>::get_subformulas() const {
     return {subformula};
   }
+  template class UnOp<operators::Not>;
+  template class UnOp<operators::Box>;
+  template class UnOp<operators::Diamond>;
 
   template <operators Op>
   BinOp<Op>::BinOp(Formula * lhs, Formula * rhs) : lhs(lhs), rhs(rhs) {
@@ -48,7 +54,6 @@ namespace pml {
   std::vector<Formula *> BinOp<Op>::get_subformulas() const {
     return {lhs, rhs};
   }
-
   template class BinOp<operators::Imply>;
   template class BinOp<operators::And>;
   template class BinOp<operators::Or>;
@@ -86,7 +91,7 @@ namespace pml {
       case(operators::Bottom) :
         break;
       case(operators::Not) :
-        ret = new Not(f->get_subformulas()[0]);
+        ret = new UnOp<operators::Not>(f->get_subformulas()[0]);
         break;
       case(operators::Box) :
         break;
