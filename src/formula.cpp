@@ -33,6 +33,21 @@ namespace pml {
   }
 
   template <operators Op>
+  NullOp<Op>::NullOp() {
+    op = Op;
+  }
+  template <operators Op>
+  std::string NullOp<Op>::to_string() const {
+    return pml::to_string(op);
+  }
+  template <operators Op>
+  std::vector<Formula *> NullOp<Op>::get_subformulas() const {
+    return subformulas;
+  }
+  template class NullOp<operators::Top>;
+  template class NullOp<operators::Bottom>;
+
+  template <operators Op>
   UnOp<Op>::UnOp(Formula * subformula) : subformula(subformula) {
     op = Op;
     subformulas = {subformula};
@@ -43,7 +58,7 @@ namespace pml {
   }
   template <operators Op>
   std::vector<Formula *> UnOp<Op>::get_subformulas() const {
-    return {subformula};
+    return subformulas;
   }
   template class UnOp<operators::Not>;
   template class UnOp<operators::Box>;
@@ -95,8 +110,10 @@ namespace pml {
         ret = new Var(f->to_string());
         break;
       case(operators::Top) :
+        ret = new NullOp<operators::Top>();
         break;
       case(operators::Bottom) :
+        ret = new NullOp<operators::Bottom>();
         break;
       case(operators::Not) :
         ret = new UnOp<operators::Not>(copy(f->get_subformulas()[0]));

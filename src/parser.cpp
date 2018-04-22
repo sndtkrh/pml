@@ -41,6 +41,10 @@ namespace pml {
       fml = new UnOp<operators::Box>( subformula(str, p) );
     } else if( match(to_string(operators::Diamond), str, p) ){
       fml = new UnOp<operators::Diamond>( subformula(str, p) );
+    } else if ( match(to_string(operators::Top), str, p) ){
+      fml = new NullOp<operators::Top>();
+    } else if ( match(to_string(operators::Bottom), str, p) ){
+      fml = new NullOp<operators::Bottom>();
     } else {
       fml = var(str, p);
     }

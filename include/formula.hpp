@@ -34,6 +34,14 @@ namespace pml {
   };
 
   template <operators Op>
+  class NullOp : public Formula {
+  public:
+    NullOp();
+    std::string to_string() const;
+    std::vector<Formula *> get_subformulas() const;
+  };
+
+  template <operators Op>
   class UnOp : public Formula {
   public:
     UnOp(Formula * subformula);

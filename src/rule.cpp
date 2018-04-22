@@ -19,7 +19,10 @@ namespace pml {
         }
         break;
       case(operators::Top) :
+        ret = new NullOp<operators::Top>();
+        break;
       case(operators::Bottom) :
+        ret = new NullOp<operators::Bottom>();
         break;
       case(operators::Not) :
         ret = new UnOp<operators::Not>( uniformly_substitution(f->get_subformulas()[0], g, p) );
