@@ -37,6 +37,10 @@ namespace pml {
       assert( endp );
     } else if( match(to_string(operators::Not), str, p) ) {
       fml = new UnOp<operators::Not>( subformula(str, p) );
+    } else if( match(to_string(operators::Box), str, p) ){
+      fml = new UnOp<operators::Box>( subformula(str, p) );
+    } else if( match(to_string(operators::Diamond), str, p) ){
+      fml = new UnOp<operators::Diamond>( subformula(str, p) );
     } else {
       fml = var(str, p);
     }

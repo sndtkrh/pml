@@ -16,8 +16,11 @@ namespace pml {
   class Formula {
   public:
     operators op;
+    virtual ~Formula();
     virtual std::string to_string() const = 0;
     virtual std::vector<Formula *> get_subformulas() const = 0;
+  protected:
+    std::vector<Formula *> subformulas;
   };
   bool same(const Formula * f, const Formula * g);
   Formula * copy(const Formula * f);
@@ -33,19 +36,21 @@ namespace pml {
   template <operators Op>
   class UnOp : public Formula {
   public:
-    Formula * subformula;
     UnOp(Formula * subformula);
     std::string to_string() const;
     std::vector<Formula *> get_subformulas() const;
+  private:
+    Formula * subformula;
   };
 
   template <operators Op>
   class BinOp : public Formula {
   public:
-    Formula * lhs, * rhs;
     BinOp(Formula * lhs, Formula * rhs);
     std::string to_string() const;
     std::vector<Formula *> get_subformulas() const;
+  private:
+    Formula * lhs, * rhs;
   };
 
 }

@@ -13,8 +13,7 @@ int main() {
   std::string f_g_ = "(p->q)->q";
   std::string f_ = "p->q";
 
-  Formula * f_g = parse(f_g_);
-  Formula * f = parse(f_);
-  Formula * g = modus_ponens(f, f_g);
-  std::cout << g->to_string() << std::endl;
+  Formula * f = parse(modal_fml);
+  std::cout << f->to_string() << std::endl;
+  delete f;
 }

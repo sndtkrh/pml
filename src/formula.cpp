@@ -16,6 +16,12 @@ namespace pml {
     return M.at(op);
   }
 
+  Formula::~Formula() {
+    for(Formula * fml : subformulas) {
+      delete fml;
+    }
+  }
+
   Var::Var(std::string varname) : varname(varname) {
     op = operators::NonOperator;
   }
@@ -29,10 +35,11 @@ namespace pml {
   template <operators Op>
   UnOp<Op>::UnOp(Formula * subformula) : subformula(subformula) {
     op = Op;
+    subformulas = {subformula};
   }
   template <operators Op>
   std::string UnOp<Op>::to_string() const {
-    return "~" + subformula->to_string();
+    return pml::to_string(op) + subformula->to_string();
   }
   template <operators Op>
   std::vector<Formula *> UnOp<Op>::get_subformulas() const {
@@ -45,6 +52,7 @@ namespace pml {
   template <operators Op>
   BinOp<Op>::BinOp(Formula * lhs, Formula * rhs) : lhs(lhs), rhs(rhs) {
     op = Op;
+    subformulas = {lhs, rhs};
   }
   template <operators Op>
   std::string BinOp<Op>::to_string() const {
@@ -52,7 +60,7 @@ namespace pml {
   }
   template <operators Op>
   std::vector<Formula *> BinOp<Op>::get_subformulas() const {
-    return {lhs, rhs};
+    return subformulas;
   }
   template class BinOp<operators::Imply>;
   template class BinOp<operators::And>;
