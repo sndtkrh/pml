@@ -10,6 +10,7 @@ namespace pml {
       {operators::Box, "[]"},
       {operators::Diamond, "<>"},
       {operators::Imply, "->"},
+      {operators::Equiv, "<->"},
       {operators::And, "/\\"},
       {operators::Or, "\\/"},
     };
@@ -78,6 +79,7 @@ namespace pml {
     return subformulas;
   }
   template class BinOp<operators::Imply>;
+  template class BinOp<operators::Equiv>;
   template class BinOp<operators::And>;
   template class BinOp<operators::Or>;
 
@@ -129,6 +131,13 @@ namespace pml {
           Formula * lhs = copy(f->get_subformulas()[0]);
           Formula * rhs = copy(f->get_subformulas()[1]);
           ret = new BinOp<operators::Imply>(lhs, rhs);
+        }
+        break;
+      case(operators::Equiv) :
+        {
+          Formula * lhs = copy(f->get_subformulas()[0]);
+          Formula * rhs = copy(f->get_subformulas()[1]);
+          ret = new BinOp<operators::Equiv>(lhs, rhs);
         }
         break;
       case(operators::And) :

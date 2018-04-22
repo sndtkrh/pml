@@ -43,6 +43,16 @@ namespace pml {
           );
         }
         break;
+      case(operators::Equiv) :
+        {
+          Formula * lhs = f->get_subformulas()[0];
+          Formula * rhs = f->get_subformulas()[1];
+          ret = new BinOp<operators::Equiv>(
+            uniformly_substitution(lhs, g, p),
+            uniformly_substitution(rhs, g, p)
+          );
+        }
+        break;
       case(operators::And) :
         {
           Formula * lhs = f->get_subformulas()[0];

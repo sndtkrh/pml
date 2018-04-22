@@ -9,7 +9,7 @@ namespace pml {
     NonOperator,
     Top, Bottom, // nullary
     Not, Diamond, Box, // unary
-    Imply, And, Or // binary
+    Imply, Equiv, And, Or // binary
   };
   const char * to_string(operators op);
 

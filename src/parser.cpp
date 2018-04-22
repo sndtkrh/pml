@@ -18,6 +18,8 @@ namespace pml {
     if( end(str, p) ) return fml;
     if( match(to_string(operators::Imply), str, p) ) {
       fml = new BinOp<operators::Imply>(fml, formula(str, p));
+    } else if( match(to_string(operators::Equiv), str, p) ) {
+      fml = new BinOp<operators::Equiv>(fml, formula(str, p));
     } else if( match(to_string(operators::Or), str, p) ) {
       fml = new BinOp<operators::Or>(fml, formula(str, p));
     } else if( match(to_string(operators::And), str, p) ) {

@@ -7,7 +7,7 @@
 /*
 BNF
 <formula>
-  ::= <subformula> *( "->" <subformula> | "\/" <subformula> | "/\" <subformula> )
+  ::= <subformula> *( "->" <subformula> | "<->" <subformula> | "\/" <subformula> | "/\" <subformula> )
 <subformula>
   ::= "T" | "F" | <var>
     | "(" <formula> ")"

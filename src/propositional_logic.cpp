@@ -17,6 +17,7 @@ namespace pml {
       case operators::Box :
         return false;
       case operators::Imply :
+      case operators::Equiv :
       case operators::And :
       case operators::Or :
         auto fmls = fml->get_subformulas();
@@ -38,6 +39,7 @@ namespace pml {
       case operators::Box :
         return get_variables(fml->get_subformulas()[0]);
       case operators::Imply :
+      case operators::Equiv :
       case operators::And :
       case operators::Or :
         auto fmls = fml->get_subformulas();
@@ -73,6 +75,12 @@ namespace pml {
           auto fmls = fml->get_subformulas();
           bool v = eval(fmls[0], valuation);
           ret = (!v) || (v && eval(fmls[1], valuation));
+          break;
+        }
+      case operators::Equiv :
+        {
+          auto fmls = fml->get_subformulas();
+          ret = eval(fmls[0], valuation) == eval(fmls[1], valuation);
           break;
         }
       case operators::And :
