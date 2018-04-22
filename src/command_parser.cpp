@@ -12,7 +12,7 @@ namespace pml {
       Formula * fml = formula(str, p);
       skip_spaces(str, p);
       if( end(str,p) && fml != nullptr ) {
-          if( is_propositional_formula(fml) && is_tautology(fml) ) {
+        if( is_propositional_formula(fml) && is_tautology(fml) ) {
           ret = true;
         } else {
           for(const auto & axiom : AxiomK) {
@@ -32,19 +32,22 @@ namespace pml {
       int idx0 = indicator(str, p);
       int idx1 = indicator(str, p);
       if( 0 <= idx0 && static_cast<std::size_t>(idx0) < theorems.size()
-        && 0 <= idx1 && static_cast<std::size_t>(idx1) < theorems.size() ) {
-        Formula * f = theorems[idx0];
-        Formula * f_g = theorems[idx1];
-        if( end(str, p) ) {
-          Formula * g = modus_ponens(f, f_g);
-          if( g != nullptr ) {
-            ret = true;
-            theorems.push_back(g);
-          }
+        && 0 <= idx1 && static_cast<std::size_t>(idx1) < theorems.size()
+        && end(str, p) ) {
+        Formula * g = modus_ponens(theorems[idx0], theorems[idx1]);
+        if( g != nullptr ) {
+          ret = true;
+          theorems.push_back(g);
         }
       }
     } else if( match("US", str, p) ) {
     } else if( match("G", str, p) ) {
+      int idx = indicator(str, p);
+      if( 0 <= idx && static_cast<std::size_t>(idx) < theorems.size() && end(str, p) ){
+        Formula * g = generalization(theorems[idx]);
+        ret = true;
+        theorems.push_back(g);
+      }
     }
     return ret;
   }
