@@ -1,28 +1,19 @@
 #include "formula.hpp"
-
+#include <map>
 namespace pml {
-  const char * to_string(const operators & op) {
-    switch(op){
-      case(operators::NonOperator) :
-        return "";
-      case(operators::Top) :
-        return "T";
-      case(operators::Bottom) :
-        return "F";
-      case(operators::Not) :
-        return "~";
-      case(operators::Box) :
-        return "[]";
-      case(operators::Diamond) :
-        return "<>";
-      case(operators::Imply) :
-        return "->";
-      case(operators::And) :
-        return "/\\";
-      case(operators::Or) :
-        return "\\/";
-    }
-    return "";
+  const char * to_string(operators op) {
+    const std::map<operators, const char *> M = {
+      {operators::NonOperator, ""},
+      {operators::Top, "T"},
+      {operators::Bottom, "F"},
+      {operators::Not, "~"},
+      {operators::Box, "[]"},
+      {operators::Diamond, "<>"},
+      {operators::Imply, "->"},
+      {operators::And, "/\\"},
+      {operators::Or, "\\/"},
+    };
+    return M.at(op);
   }
 
   Var::Var(std::string varname) : varname(varname) {

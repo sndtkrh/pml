@@ -11,7 +11,7 @@ namespace pml {
     Not, Diamond, Box, // unary
     Imply, And, Or // binary
   };
-  const char * to_string(const operators & op);
+  const char * to_string(operators op);
 
   class Formula {
   public:
