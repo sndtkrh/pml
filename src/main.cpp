@@ -11,11 +11,14 @@ int main() {
   std::string f1 = "(( ~p\\/(p/\\q) )->(p->q)) /\\ ((p->q)->( ~p\\/(p/\\q) ))";
   std::string f2 = "( ~p\\/(p/\\q) ) -> (p->q)";
   std::string f_g_ = "(p->q)->q";
-  std::string f_ = "p->q";
+  std::string f_ = "[]p-><>q";
 
-  Formula * f = parse(f_);
+  Formula * f = parse(f0);
+  Formula * g = parse(f_);
   std::cout << f->to_string() << std::endl;
-  Formula * Gf = generalization(f);
-  std::cout << Gf->to_string() << std::endl;
+  std::cout << g->to_string() << std::endl;
+  Formula * h = uniformly_substitution(f,g,"p");
   delete f;
+  delete g;
+  std::cout << h->to_string() << std::endl;
 }

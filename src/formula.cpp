@@ -99,11 +99,13 @@ namespace pml {
       case(operators::Bottom) :
         break;
       case(operators::Not) :
-        ret = new UnOp<operators::Not>(f->get_subformulas()[0]);
+        ret = new UnOp<operators::Not>(copy(f->get_subformulas()[0]));
         break;
       case(operators::Box) :
+        ret = new UnOp<operators::Box>(copy(f->get_subformulas()[0]));
         break;
       case(operators::Diamond) :
+        ret = new UnOp<operators::Diamond>(copy(f->get_subformulas()[0]));
         break;
       case(operators::Imply) :
         {
