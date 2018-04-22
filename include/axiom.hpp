@@ -4,7 +4,8 @@
 #include <set>
 
 namespace pml {
-  extern const Formula * Dual;
+  extern const Formula * DualB;
+  extern const Formula * DualD;
   extern const Formula * K;
   extern const std::set<const Formula *> AxiomK;
 }
