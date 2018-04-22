@@ -52,13 +52,17 @@ namespace pml {
   }
 
   Formula * var(const std::string & str, std::size_t & p) {
+    std::string name = varname(str, p);
+    return (name == "") ? nullptr : new Var(name);
+  }
+  std::string varname(const std::string & str, std::size_t & p) {
     skip_spaces(str, p);
     std::string varname = "";
     for(; p < str.size() && is_lowercase(str[p]); p++) {
       varname += str[p];
     }
     skip_spaces(str, p);
-    return (varname == "") ? nullptr : new Var(varname);
+    return varname;
   }
 
   void skip_spaces(const std::string & str, std::size_t & p) {

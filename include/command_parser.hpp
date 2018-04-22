@@ -9,7 +9,7 @@
 BNF
 <command> ::= <axiom> <formula>
             | <mp> <indicatar> <indicator>
-            | <us> <indicator> (<indicatar> | <formula>) <var>
+            | <us> <indicator> (<indicatar> | <formula>) <varname>
             | <g> <indicator>
 <indicator> ::= "#" <number>
 <number> = +[0-9]
