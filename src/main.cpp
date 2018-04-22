@@ -13,7 +13,9 @@ int main() {
   std::string f_g_ = "(p->q)->q";
   std::string f_ = "p->q";
 
-  Formula * f = parse(modal_fml);
+  Formula * f = parse(f_);
   std::cout << f->to_string() << std::endl;
+  Formula * Gf = generalization(f);
+  std::cout << Gf->to_string() << std::endl;
   delete f;
 }

@@ -7,4 +7,8 @@ namespace pml {
     }
     return nullptr;
   }
+
+  Formula * generalization(Formula * f) {
+    return new UnOp<operators::Box>( copy(f) );
+  }
 }
