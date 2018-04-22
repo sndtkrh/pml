@@ -83,6 +83,26 @@ namespace pml {
   template class BinOp<operators::And>;
   template class BinOp<operators::Or>;
 
+
+  template <operators Op>
+  Formula * make_binop(Formula * lhs, Formula * rhs) {
+    if( lhs == nullptr || rhs == nullptr ) return nullptr;
+    return new BinOp<Op>(lhs, rhs);
+  }
+  template Formula * make_binop<operators::Imply>(Formula * lhs, Formula * rhs);
+  template Formula * make_binop<operators::Equiv>(Formula * lhs, Formula * rhs);
+  template Formula * make_binop<operators::And>(Formula * lhs, Formula * rhs);
+  template Formula * make_binop<operators::Or>(Formula * lhs, Formula * rhs);
+
+  template <operators Op>
+  Formula * make_unop(Formula * f) {
+    if( f == nullptr ) return nullptr;
+    return new UnOp<Op>(f);
+  }
+  template Formula * make_unop<operators::Not>(Formula * f);
+  template Formula * make_unop<operators::Box>(Formula * f);
+  template Formula * make_unop<operators::Diamond>(Formula * f);
+
   bool same(const Formula * f, const Formula * g) {
     bool ret = true;
     if( f->op == g->op ) {

@@ -50,6 +50,8 @@ namespace pml {
   private:
     Formula * subformula;
   };
+  template <operators Op>
+  Formula * make_unop(Formula * f);
 
   template <operators Op>
   class BinOp : public Formula {
@@ -60,6 +62,8 @@ namespace pml {
   private:
     Formula * lhs, * rhs;
   };
+  template <operators Op>
+  Formula * make_binop(Formula * lhs, Formula * rhs);
 
 }
 

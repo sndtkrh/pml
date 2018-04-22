@@ -6,43 +6,40 @@ namespace pml {
   Formula * parse(const std::string & str) {
     std::size_t p = 0;
     Formula * fml = formula(str, p);
-    assert( end(str, p) );
-    return fml;
+    return end(str,p) ? fml : nullptr;
   }
 
   Formula * formula(const std::string & str, std::size_t & p) {
-    // std::cout << "formula " << p << std::endl;
     skip_spaces(str, p);
     Formula * fml = subformula(str, p);
     skip_spaces(str, p);
     if( end(str, p) ) return fml;
     if( match(to_string(operators::Imply), str, p) ) {
-      fml = new BinOp<operators::Imply>(fml, formula(str, p));
+      fml = make_binop<operators::Imply>(fml, formula(str, p));
     } else if( match(to_string(operators::Equiv), str, p) ) {
-      fml = new BinOp<operators::Equiv>(fml, formula(str, p));
+      fml = make_binop<operators::Equiv>(fml, formula(str, p));
     } else if( match(to_string(operators::Or), str, p) ) {
-      fml = new BinOp<operators::Or>(fml, formula(str, p));
+      fml = make_binop<operators::Or>(fml, formula(str, p));
     } else if( match(to_string(operators::And), str, p) ) {
-      fml = new BinOp<operators::And>(fml, formula(str, p));
+      fml = make_binop<operators::And>(fml, formula(str, p));
     }
     return fml;
   }
 
   Formula * subformula(const std::string & str, std::size_t & p) {
-    // std::cout << "subformula " << p << std::endl;
     skip_spaces(str, p);
     Formula * fml = nullptr;
     if( match("(", str, p) ) {
       fml = formula(str, p);
       skip_spaces(str, p);
       bool endp = match(")", str, p);
-      assert( endp );
+      if( !endp ) fml = nullptr;
     } else if( match(to_string(operators::Not), str, p) ) {
-      fml = new UnOp<operators::Not>( subformula(str, p) );
+      fml = make_unop<operators::Not>( subformula(str, p) );
     } else if( match(to_string(operators::Box), str, p) ){
-      fml = new UnOp<operators::Box>( subformula(str, p) );
+      fml = make_unop<operators::Box>( subformula(str, p) );
     } else if( match(to_string(operators::Diamond), str, p) ){
-      fml = new UnOp<operators::Diamond>( subformula(str, p) );
+      fml = make_unop<operators::Diamond>( subformula(str, p) );
     } else if ( match(to_string(operators::Top), str, p) ){
       fml = new NullOp<operators::Top>();
     } else if ( match(to_string(operators::Bottom), str, p) ){
@@ -55,7 +52,6 @@ namespace pml {
   }
 
   Formula * var(const std::string & str, std::size_t & p) {
-    // std::cout << "var " << p << std::endl;
     skip_spaces(str, p);
     std::string varname = "";
     for(; p < str.size() && is_lowercase(str[p]); p++) {
