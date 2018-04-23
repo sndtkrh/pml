@@ -1,13 +1,18 @@
 # PML -- Proof Assistant for Modal Logic
+
 これは様相論理の証明支援システムです．
 
 ## コンパイルに必要なもの
+
 - CMake
 - C++ 14 以降に対応した C++ コンパイラ
+
 g++ 5 以上でコンパイルできることを確認しています．
 
 ## コンパイルとインストール
+
 Linux と Mac では以下の方法でインストールできます．
+
 ```bash
 $ git clone https://github.com/sndtkrh/pml.git
 $ cd ./pml
@@ -19,6 +24,7 @@ $ make install
 ```
 
 ## 様相言語
+
 | シンボル | 読み方 |
 |:-:|:--|
 | 英小文字からなる文字列 | 命題変数 |
@@ -33,6 +39,7 @@ $ make install
 | `\/` | 論理和 |
 
 ## 推論規則
+
 | 規則 | 構文 | 操作 |
 |:-:|:-:|:-|
 | modus ponens | `MP #n #m` | 既に証明されている n 番目の論理式 φ と m 番目の論理式 φ→ψ から ψ を得る |
@@ -41,9 +48,11 @@ $ make install
 
 
 ## 例
+
 例えば □p∧□q→□(p∧q) の証明は以下のように行います．
 `>>` の後に続く文字列がユーザの入力です．
 この証明は [1] を参考にしました．
+
 ```
 $ pml
 PML -- A Proof Assistant for Modal Logic
@@ -93,4 +102,5 @@ Axioms are :
 ```
 
 ## 参考文献
+
 1. Patrick Blackburn, Maarten de Rijke and Yde Venema, Modal Logic, Cambridge University Press, 2002
