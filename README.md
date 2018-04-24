@@ -131,6 +131,8 @@ $ pml ./examples/ex.pml
 OK
 ```
 
+`examples/exercise_1_6_1.pml` は [1] の演習問題 1.6.1 の解答です．
+
 ## 参考文献
 
 1. Patrick Blackburn, Maarten de Rijke and Yde Venema, Modal Logic, Cambridge University Press, 2002
