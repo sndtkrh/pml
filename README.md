@@ -138,3 +138,4 @@ OK
 1. Patrick Blackburn, Maarten de Rijke and Yde Venema, Modal Logic, Cambridge University Press, 2002
 
 ## License
+MIT
