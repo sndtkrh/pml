@@ -7,18 +7,19 @@
 
 /*
 BNF
-<command> ::= <quit>
+<command> ::= <quit> | <comment>
             | <axiom> <formula>
             | <mp> <indicatar> <indicator>
             | <us> <indicator> (<indicatar> | <formula>) <varname>
             | <g> <indicator>
 <indicator> ::= "#" <number>
 <number> = +[0-9]
-<quit> ::= "Q"
 <axiom> ::= "Axiom"
 <mp> ::= "MP"
 <us> ::= "US"
 <g> ::= "G"
+<quit> ::= "Q"
+<comment> ::= "//" <string>
 */
 
 namespace pml {

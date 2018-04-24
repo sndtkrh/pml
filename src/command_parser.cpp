@@ -8,7 +8,9 @@ namespace pml {
   bool command_parser(const std::string & str, std::size_t & p, std::vector<Formula *> & theorems) {
     bool ret = false;
     skip_spaces(str, p);
-    if( match("Q", str, p) ) {
+    if( match("//", str, p) ) {
+      ret = true;
+    } else if( match("Q", str, p) ) {
       skip_spaces(str, p);
       if( end(str, p) ) exit(0);
     } else if( match("Axiom", str, p) ) {
