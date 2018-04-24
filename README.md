@@ -98,9 +98,11 @@ Axioms are :
 #17  |- (([]p->([]q->[](p/\q)))->(([]p/\[]q)->[](p/\q)))
 >> MP #13 #17
 #18  |- (([]p/\[]q)->[](p/\q))
->>
+>> Q
 ```
 
 ## 参考文献
 
 1. Patrick Blackburn, Maarten de Rijke and Yde Venema, Modal Logic, Cambridge University Press, 2002
+
+## License
