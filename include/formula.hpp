@@ -18,7 +18,7 @@ namespace pml {
     operators op;
     virtual ~Formula();
     virtual std::string to_string() const = 0;
-    virtual std::vector<Formula *> get_subformulas() const = 0;
+    std::vector<Formula *> get_subformulas() const;
   protected:
     std::vector<Formula *> subformulas;
   };
@@ -30,7 +30,6 @@ namespace pml {
     std::string varname;
     Var(std::string varname);
     std::string to_string() const;
-    std::vector<Formula *> get_subformulas() const;
   };
 
   template <operators Op>
@@ -38,7 +37,6 @@ namespace pml {
   public:
     NullOp();
     std::string to_string() const;
-    std::vector<Formula *> get_subformulas() const;
   };
 
   template <operators Op>
@@ -46,7 +44,6 @@ namespace pml {
   public:
     UnOp(Formula * subformula);
     std::string to_string() const;
-    std::vector<Formula *> get_subformulas() const;
   private:
     Formula * subformula;
   };
@@ -58,7 +55,6 @@ namespace pml {
   public:
     BinOp(Formula * lhs, Formula * rhs);
     std::string to_string() const;
-    std::vector<Formula *> get_subformulas() const;
   private:
     Formula * lhs, * rhs;
   };

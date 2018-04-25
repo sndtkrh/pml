@@ -22,15 +22,15 @@ namespace pml {
       delete fml;
     }
   }
+  std::vector<Formula *> Formula::get_subformulas() const {
+    return subformulas;
+  }
 
   Var::Var(std::string varname) : varname(varname) {
     op = operators::NonOperator;
   }
   std::string Var::to_string() const {
     return varname;
-  }
-  std::vector<Formula *> Var::get_subformulas() const {
-    return {};
   }
 
   template <operators Op>
@@ -40,10 +40,6 @@ namespace pml {
   template <operators Op>
   std::string NullOp<Op>::to_string() const {
     return pml::to_string(op);
-  }
-  template <operators Op>
-  std::vector<Formula *> NullOp<Op>::get_subformulas() const {
-    return subformulas;
   }
   template class NullOp<operators::Top>;
   template class NullOp<operators::Bottom>;
@@ -57,10 +53,6 @@ namespace pml {
   std::string UnOp<Op>::to_string() const {
     return pml::to_string(op) + subformula->to_string();
   }
-  template <operators Op>
-  std::vector<Formula *> UnOp<Op>::get_subformulas() const {
-    return subformulas;
-  }
   template class UnOp<operators::Not>;
   template class UnOp<operators::Box>;
   template class UnOp<operators::Diamond>;
@@ -73,10 +65,6 @@ namespace pml {
   template <operators Op>
   std::string BinOp<Op>::to_string() const {
     return "(" + lhs->to_string() + pml::to_string(op) + rhs->to_string() + ")";
-  }
-  template <operators Op>
-  std::vector<Formula *> BinOp<Op>::get_subformulas() const {
-    return subformulas;
   }
   template class BinOp<operators::Imply>;
   template class BinOp<operators::Equiv>;
