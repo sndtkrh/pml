@@ -5,13 +5,13 @@
 
 namespace pml {
   // f,f->g |-> g
-  Formula * modus_ponens(const Formula * f, const Formula * f_imply_g);
+  Fmlp modus_ponens(const Fmlp f, const Fmlp f_imply_g);
 
   // f,g |-> f[g/p]
-  Formula * uniformly_substitution(const Formula * f, const Formula * g, const std::string & p);
+  Fmlp uniformly_substitution(const Fmlp f, const Fmlp g, const std::string & p);
 
   // f |-> []f
-  Formula * generalization(const Formula * f);
+  Fmlp generalization(const Fmlp f);
 }
 
 #endif

@@ -6,10 +6,10 @@
 #include "pml.hpp"
 using namespace pml;
 
-void interactive_mode(std::vector<Formula *> & theorems);
-void filechecking(const std::string & filename, std::vector<Formula *> & theorems);
+void interactive_mode(std::vector<Fmlp> & theorems);
+void filechecking(const std::string & filename, std::vector<Fmlp> & theorems);
 int main(int argc, char *argv[]) {
-  std::vector<Formula *> theorems;
+  std::vector<Fmlp> theorems;
   if( argc == 1 ) {
     interactive_mode(theorems);
   } else if( argc == 2 ) {
@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   }
 }
 
-void interactive_mode(std::vector<Formula *> & theorems) {
+void interactive_mode(std::vector<Fmlp> & theorems) {
   std::cout << "PML -- A Proof Assistant for Modal Logic" << std::endl;
   std::cout << "Axioms are :" << std::endl;
   for(const auto & axiom : AxiomK) {
@@ -46,7 +46,7 @@ void interactive_mode(std::vector<Formula *> & theorems) {
   std::cout << std::endl;
 }
 
-void filechecking(const std::string & filename, std::vector<Formula *> & theorems) {
+void filechecking(const std::string & filename, std::vector<Fmlp> & theorems) {
   std::ifstream fin;
   fin.open(filename, std::ios::in);
   if( !fin ){

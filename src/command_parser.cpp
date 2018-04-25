@@ -5,7 +5,7 @@
 #include "propositional_logic.hpp"
 
 namespace pml {
-  bool command_parser(const std::string & str, std::size_t & p, std::vector<Formula *> & theorems) {
+  bool command_parser(const std::string & str, std::size_t & p, std::vector<Fmlp> & theorems) {
     bool ret = false;
     skip_spaces(str, p);
     if( match("//", str, p) ) {
@@ -14,9 +14,9 @@ namespace pml {
       skip_spaces(str, p);
       if( end(str, p) ) exit(0);
     } else if( match("Axiom", str, p) ) {
-      Formula * fml = formula(str, p);
+      Fmlp fml = formula(str, p);
       skip_spaces(str, p);
-      if( end(str,p) && fml != nullptr ) {
+      if( end(str,p) && fml ) {
         if( is_propositional_formula(fml) && is_tautology(fml) ) {
           ret = true;
         } else {
@@ -29,8 +29,6 @@ namespace pml {
         }
         if( ret ) {
           theorems.push_back(fml);
-        } else {
-          delete fml;
         }
       }
     } else if( match("MP", str, p) ) {
@@ -39,8 +37,8 @@ namespace pml {
       if( 0 <= idx0 && static_cast<std::size_t>(idx0) < theorems.size()
         && 0 <= idx1 && static_cast<std::size_t>(idx1) < theorems.size()
         && end(str, p) ) {
-        Formula * g = modus_ponens(theorems[idx0], theorems[idx1]);
-        if( g != nullptr ) {
+        Fmlp g = modus_ponens(theorems[idx0], theorems[idx1]);
+        if( g ) {
           ret = true;
           theorems.push_back(g);
         }
@@ -48,30 +46,26 @@ namespace pml {
     } else if( match("US", str, p) ) {
       int idx0 = indicator(str, p);
       if( 0 <= idx0 && static_cast<std::size_t>(idx0) < theorems.size() ) {
-        Formula * f = theorems[idx0], * g;
+        Fmlp f = theorems[idx0];
+        Fmlp g;
         int idx1 = indicator(str, p);
-        bool g_is_new = false;
         if( 0 <= idx1 && static_cast<std::size_t>(idx1) < theorems.size() ) {
           g = theorems[idx1];
         } else {
           g = formula(str, p);
-          g_is_new = true;
         }
-        if( g != nullptr ) {
+        if( g ) {
           std::string name = varname(str, p);
           if( end(str, p) && name.size() > 0 ) {
             ret = true;
             theorems.push_back(uniformly_substitution(f, g, name));
-          }
-          if( g_is_new ) {
-            delete g;
           }
         }
       }
     } else if( match("G", str, p) ) {
       int idx = indicator(str, p);
       if( 0 <= idx && static_cast<std::size_t>(idx) < theorems.size() && end(str, p) ){
-        Formula * g = generalization(theorems[idx]);
+        Fmlp g = generalization(theorems[idx]);
         ret = true;
         theorems.push_back(g);
       }

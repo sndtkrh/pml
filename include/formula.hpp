@@ -2,6 +2,7 @@
 #define FORMULA
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace pml {
   // the basic modal language
@@ -13,17 +14,20 @@ namespace pml {
   };
   const char * to_string(operators op);
 
+  class Formula;
+  typedef std::shared_ptr<Formula> Fmlp;
+
   class Formula {
   public:
     operators op;
-    virtual ~Formula();
+
     virtual std::string to_string() const = 0;
-    std::vector<Formula *> get_subformulas() const;
+    std::vector<Fmlp> get_subformulas() const;
   protected:
-    std::vector<Formula *> subformulas;
+    std::vector<Fmlp> subformulas;
   };
-  bool same(const Formula * f, const Formula * g);
-  Formula * copy(const Formula * f);
+  bool same(const Fmlp f, const Fmlp g);
+  Fmlp copy(const Fmlp f);
 
   class Var : public Formula {
   public:
@@ -42,24 +46,24 @@ namespace pml {
   template <operators Op>
   class UnOp : public Formula {
   public:
-    UnOp(Formula * subformula);
+    UnOp(Fmlp subformula);
     std::string to_string() const;
   private:
-    Formula * subformula;
+    Fmlp subformula;
   };
   template <operators Op>
-  Formula * make_unop(Formula * f);
+  Fmlp make_unop(Fmlp f);
 
   template <operators Op>
   class BinOp : public Formula {
   public:
-    BinOp(Formula * lhs, Formula * rhs);
+    BinOp(Fmlp lhs, Fmlp rhs);
     std::string to_string() const;
   private:
-    Formula * lhs, * rhs;
+    Fmlp lhs, rhs;
   };
   template <operators Op>
-  Formula * make_binop(Formula * lhs, Formula * rhs);
+  Fmlp make_binop(Fmlp lhs, Fmlp rhs);
 
 }
 

@@ -17,11 +17,11 @@ BNF
 */
 
 namespace pml {
-  Formula * parse(const std::string & str);
+  Fmlp parse(const std::string & str);
 
-  Formula * formula(const std::string & str, std::size_t & p);
-  Formula * subformula(const std::string & str, std::size_t & p);
-  Formula * var(const std::string & str, std::size_t & p);
+  Fmlp formula(const std::string & str, std::size_t & p);
+  Fmlp subformula(const std::string & str, std::size_t & p);
+  Fmlp var(const std::string & str, std::size_t & p);
   std::string varname(const std::string & str, std::size_t & p);
   void skip_spaces(const std::string & str, std::size_t &p);
   bool end(const std::string & str, const std::size_t p);

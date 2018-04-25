@@ -4,10 +4,10 @@
 #include <set>
 
 namespace pml {
-  extern const Formula * DualB;
-  extern const Formula * DualD;
-  extern const Formula * K;
-  extern const std::set<const Formula *> AxiomK;
+  extern const Fmlp DualB;
+  extern const Fmlp DualD;
+  extern const Fmlp K;
+  extern const std::vector<Fmlp> AxiomK;
 }
 
 #endif
