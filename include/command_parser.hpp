@@ -23,7 +23,7 @@ BNF
 */
 
 namespace pml {
-  bool command_parser(const std::string & str, std::size_t & p, std::vector<Formula *> & theorems);
+  bool command_parser(const std::string & str, std::size_t & p, std::vector<Fmlp> & theorems);
   int indicator(const std::string & str, std::size_t & p);
   int number(const std::string & str, std::size_t & p);
   bool is_number(char c);

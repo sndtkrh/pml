@@ -17,12 +17,7 @@ namespace pml {
     return M.at(op);
   }
 
-  Formula::~Formula() {
-    for(Formula * fml : subformulas) {
-      delete fml;
-    }
-  }
-  std::vector<Formula *> Formula::get_subformulas() const {
+  std::vector<Fmlp> Formula::get_subformulas() const {
     return subformulas;
   }
 
@@ -45,7 +40,7 @@ namespace pml {
   template class NullOp<operators::Bottom>;
 
   template <operators Op>
-  UnOp<Op>::UnOp(Formula * subformula) : subformula(subformula) {
+  UnOp<Op>::UnOp(Fmlp subformula) : subformula(subformula) {
     op = Op;
     subformulas = {subformula};
   }
@@ -58,7 +53,7 @@ namespace pml {
   template class UnOp<operators::Diamond>;
 
   template <operators Op>
-  BinOp<Op>::BinOp(Formula * lhs, Formula * rhs) : lhs(lhs), rhs(rhs) {
+  BinOp<Op>::BinOp(Fmlp lhs, Fmlp rhs) : lhs(lhs), rhs(rhs) {
     op = Op;
     subformulas = {lhs, rhs};
   }
@@ -73,32 +68,34 @@ namespace pml {
 
 
   template <operators Op>
-  Formula * make_binop(Formula * lhs, Formula * rhs) {
-    if( lhs == nullptr || rhs == nullptr ) return nullptr;
-    return new BinOp<Op>(lhs, rhs);
+  Fmlp make_binop(Fmlp lhs, Fmlp rhs) {
+    Fmlp ret;
+    if( lhs && rhs ) ret = std::make_shared<BinOp<Op>>(lhs, rhs);
+    return ret;
   }
-  template Formula * make_binop<operators::Imply>(Formula * lhs, Formula * rhs);
-  template Formula * make_binop<operators::Equiv>(Formula * lhs, Formula * rhs);
-  template Formula * make_binop<operators::And>(Formula * lhs, Formula * rhs);
-  template Formula * make_binop<operators::Or>(Formula * lhs, Formula * rhs);
+  template Fmlp make_binop<operators::Imply>(Fmlp lhs, Fmlp rhs);
+  template Fmlp make_binop<operators::Equiv>(Fmlp lhs, Fmlp rhs);
+  template Fmlp make_binop<operators::And>(Fmlp lhs, Fmlp rhs);
+  template Fmlp make_binop<operators::Or>(Fmlp lhs, Fmlp rhs);
 
   template <operators Op>
-  Formula * make_unop(Formula * f) {
-    if( f == nullptr ) return nullptr;
-    return new UnOp<Op>(f);
+  Fmlp make_unop(Fmlp f) {
+    Fmlp ret;
+    if( f ) ret = std::make_shared<UnOp<Op>>(f);
+    return ret;
   }
-  template Formula * make_unop<operators::Not>(Formula * f);
-  template Formula * make_unop<operators::Box>(Formula * f);
-  template Formula * make_unop<operators::Diamond>(Formula * f);
+  template Fmlp make_unop<operators::Not>(Fmlp f);
+  template Fmlp make_unop<operators::Box>(Fmlp f);
+  template Fmlp make_unop<operators::Diamond>(Fmlp f);
 
-  bool same(const Formula * f, const Formula * g) {
+  bool same(const Fmlp f, const Fmlp g) {
     bool ret = true;
     if( f->op == g->op ) {
       if( f->op == operators::NonOperator ) {
         ret = f->to_string() == g->to_string();
       } else {
-        std::vector<Formula *> fsub = f->get_subformulas();
-        std::vector<Formula *> gsub = g->get_subformulas();
+        std::vector<Fmlp> fsub = f->get_subformulas();
+        std::vector<Fmlp> gsub = g->get_subformulas();
         if( fsub.size() == gsub.size() ) {
           for(std::size_t i = 0; i < fsub.size(); i++) {
             ret = ret && same(fsub[i], gsub[i]);
@@ -113,53 +110,53 @@ namespace pml {
     return ret;
   }
 
-  Formula * copy(const Formula * f) {
-    Formula * ret = nullptr;
+  Fmlp copy(const Fmlp f) {
+    Fmlp ret;
     switch(f->op){
       case(operators::NonOperator) :
-        ret = new Var(f->to_string());
+        ret = std::make_shared<Var>(f->to_string());
         break;
       case(operators::Top) :
-        ret = new NullOp<operators::Top>();
+        ret = std::make_shared<NullOp<operators::Top>>();
         break;
       case(operators::Bottom) :
-        ret = new NullOp<operators::Bottom>();
+        ret = std::make_shared<NullOp<operators::Bottom>>();
         break;
       case(operators::Not) :
-        ret = new UnOp<operators::Not>(copy(f->get_subformulas()[0]));
+        ret = std::make_shared<UnOp<operators::Not>>(copy(f->get_subformulas()[0]));
         break;
       case(operators::Box) :
-        ret = new UnOp<operators::Box>(copy(f->get_subformulas()[0]));
+        ret = std::make_shared<UnOp<operators::Box>>(copy(f->get_subformulas()[0]));
         break;
       case(operators::Diamond) :
-        ret = new UnOp<operators::Diamond>(copy(f->get_subformulas()[0]));
+        ret = std::make_shared<UnOp<operators::Diamond>>(copy(f->get_subformulas()[0]));
         break;
       case(operators::Imply) :
         {
-          Formula * lhs = copy(f->get_subformulas()[0]);
-          Formula * rhs = copy(f->get_subformulas()[1]);
-          ret = new BinOp<operators::Imply>(lhs, rhs);
+          Fmlp lhs = copy(f->get_subformulas()[0]);
+          Fmlp rhs = copy(f->get_subformulas()[1]);
+          ret = std::make_shared<BinOp<operators::Imply>>(lhs, rhs);
         }
         break;
       case(operators::Equiv) :
         {
-          Formula * lhs = copy(f->get_subformulas()[0]);
-          Formula * rhs = copy(f->get_subformulas()[1]);
-          ret = new BinOp<operators::Equiv>(lhs, rhs);
+          Fmlp lhs = copy(f->get_subformulas()[0]);
+          Fmlp rhs = copy(f->get_subformulas()[1]);
+          ret = std::make_shared<BinOp<operators::Equiv>>(lhs, rhs);
         }
         break;
       case(operators::And) :
         {
-          Formula * lhs = copy(f->get_subformulas()[0]);
-          Formula * rhs = copy(f->get_subformulas()[1]);
-          ret = new BinOp<operators::And>(lhs, rhs);
+          Fmlp lhs = copy(f->get_subformulas()[0]);
+          Fmlp rhs = copy(f->get_subformulas()[1]);
+          ret = std::make_shared<BinOp<operators::And>>(lhs, rhs);
         }
         break;
       case(operators::Or) :
         {
-          Formula * lhs = copy(f->get_subformulas()[0]);
-          Formula * rhs = copy(f->get_subformulas()[1]);
-          ret = new BinOp<operators::Or>(lhs, rhs);
+          Fmlp lhs = copy(f->get_subformulas()[0]);
+          Fmlp rhs = copy(f->get_subformulas()[1]);
+          ret = std::make_shared<BinOp<operators::Or>>(lhs, rhs);
         }
         break;
     }

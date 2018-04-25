@@ -1,15 +1,16 @@
 #include "rule.hpp"
 
 namespace pml {
-  Formula * modus_ponens(const Formula * f, const Formula * f_imply_g) {
+  Fmlp modus_ponens(const Fmlp f, const Fmlp f_imply_g) {
+    Fmlp ret;
     if ( (f_imply_g->op == operators::Imply) && same(f, f_imply_g->get_subformulas()[0]) ){
-      return copy( f_imply_g->get_subformulas()[1] );
+      ret = f_imply_g->get_subformulas()[1];
     }
-    return nullptr;
+    return ret;
   }
 
-  Formula * uniformly_substitution(const Formula * f, const Formula * g, const std::string & p) {
-    Formula * ret = nullptr;
+  Fmlp uniformly_substitution(const Fmlp f, const Fmlp g, const std::string & p) {
+    Fmlp ret;
     switch(f->op) {
       case(operators::NonOperator) :
         if( f->to_string() == p ) {
@@ -19,25 +20,25 @@ namespace pml {
         }
         break;
       case(operators::Top) :
-        ret = new NullOp<operators::Top>();
+        ret = std::make_shared<NullOp<operators::Top>>();
         break;
       case(operators::Bottom) :
-        ret = new NullOp<operators::Bottom>();
+        ret = std::make_shared<NullOp<operators::Top>>();
         break;
       case(operators::Not) :
-        ret = new UnOp<operators::Not>( uniformly_substitution(f->get_subformulas()[0], g, p) );
+        ret = std::make_shared<UnOp<operators::Not>>( uniformly_substitution(f->get_subformulas()[0], g, p) );
         break;
       case(operators::Box) :
-        ret = new UnOp<operators::Box>( uniformly_substitution(f->get_subformulas()[0], g, p) );
+        ret = std::make_shared<UnOp<operators::Box>>( uniformly_substitution(f->get_subformulas()[0], g, p) );
         break;
       case(operators::Diamond) :
-        ret = new UnOp<operators::Diamond>( uniformly_substitution(f->get_subformulas()[0], g, p) );
+        ret = std::make_shared<UnOp<operators::Diamond>>( uniformly_substitution(f->get_subformulas()[0], g, p) );
         break;
       case(operators::Imply) :
         {
-          Formula * lhs = f->get_subformulas()[0];
-          Formula * rhs = f->get_subformulas()[1];
-          ret = new BinOp<operators::Imply>(
+          Fmlp lhs = f->get_subformulas()[0];
+          Fmlp rhs = f->get_subformulas()[1];
+          ret = std::make_shared<BinOp<operators::Imply>>(
             uniformly_substitution(lhs, g, p),
             uniformly_substitution(rhs, g, p)
           );
@@ -45,9 +46,9 @@ namespace pml {
         break;
       case(operators::Equiv) :
         {
-          Formula * lhs = f->get_subformulas()[0];
-          Formula * rhs = f->get_subformulas()[1];
-          ret = new BinOp<operators::Equiv>(
+          Fmlp lhs = f->get_subformulas()[0];
+          Fmlp rhs = f->get_subformulas()[1];
+          ret = std::make_shared<BinOp<operators::Equiv>>(
             uniformly_substitution(lhs, g, p),
             uniformly_substitution(rhs, g, p)
           );
@@ -55,9 +56,9 @@ namespace pml {
         break;
       case(operators::And) :
         {
-          Formula * lhs = f->get_subformulas()[0];
-          Formula * rhs = f->get_subformulas()[1];
-          ret = new BinOp<operators::And>(
+          Fmlp lhs = f->get_subformulas()[0];
+          Fmlp rhs = f->get_subformulas()[1];
+          ret = std::make_shared<BinOp<operators::And>>(
             uniformly_substitution(lhs, g, p),
             uniformly_substitution(rhs, g, p)
           );
@@ -65,9 +66,9 @@ namespace pml {
         break;
       case(operators::Or) :
         {
-          Formula * lhs = f->get_subformulas()[0];
-          Formula * rhs = f->get_subformulas()[1];
-          ret = new BinOp<operators::Or>(
+          Fmlp lhs = f->get_subformulas()[0];
+          Fmlp rhs = f->get_subformulas()[1];
+          ret = std::make_shared<BinOp<operators::Or>>(
             uniformly_substitution(lhs, g, p),
             uniformly_substitution(rhs, g, p)
           );
@@ -77,7 +78,7 @@ namespace pml {
     return ret;
   }
 
-  Formula * generalization(const Formula * f) {
-    return new UnOp<operators::Box>( copy(f) );
+  Fmlp generalization(const Fmlp f) {
+    return std::make_shared<UnOp<operators::Box>>( f );
   }
 }

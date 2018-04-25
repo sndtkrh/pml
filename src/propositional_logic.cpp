@@ -5,7 +5,7 @@
 #include <iterator>
 
 namespace pml {
-  bool is_propositional_formula(const Formula * fml){
+  bool is_propositional_formula(const Fmlp fml){
     switch(fml->op){
       case operators::NonOperator :
       case operators::Top :
@@ -27,7 +27,7 @@ namespace pml {
     return false;
   }
 
-  std::set<std::string> get_variables(const Formula * fml) {
+  std::set<std::string> get_variables(const Fmlp fml) {
     switch(fml->op){
       case operators::NonOperator :
         return {fml->to_string()};
@@ -54,7 +54,7 @@ namespace pml {
     return {};
   }
 
-  bool eval(const Formula * fml, std::map<std::string, bool> & valuation){
+  bool eval(const Fmlp fml, std::map<std::string, bool> & valuation){
     assert(is_propositional_formula(fml));
     bool ret = false;
     switch(fml->op){
@@ -103,7 +103,7 @@ namespace pml {
     return ret;
   }
 
-  bool is_tautology(const Formula * fml) {
+  bool is_tautology(const Fmlp fml) {
     std::set<std::string> phi = get_variables(fml);
     std::map<std::string, bool> valuation;
     std::vector<std::string> index;

@@ -3,15 +3,14 @@
 #include <iostream>
 
 namespace pml {
-  Formula * parse(const std::string & str) {
+  Fmlp parse(const std::string & str) {
     std::size_t p = 0;
-    Formula * fml = formula(str, p);
-    return end(str,p) ? fml : nullptr;
+    Fmlp f = formula(str, p);
+    return end(str, p) ? f : Fmlp();
   }
-
-  Formula * formula(const std::string & str, std::size_t & p) {
+  Fmlp formula(const std::string & str, std::size_t & p) {
     skip_spaces(str, p);
-    Formula * fml = subformula(str, p);
+    Fmlp fml = subformula(str, p);
     skip_spaces(str, p);
     if( end(str, p) ) return fml;
     if( match(to_string(operators::Imply), str, p) ) {
@@ -26,14 +25,14 @@ namespace pml {
     return fml;
   }
 
-  Formula * subformula(const std::string & str, std::size_t & p) {
+  Fmlp subformula(const std::string & str, std::size_t & p) {
     skip_spaces(str, p);
-    Formula * fml = nullptr;
+    Fmlp fml;
     if( match("(", str, p) ) {
       fml = formula(str, p);
       skip_spaces(str, p);
       bool endp = match(")", str, p);
-      if( !endp ) fml = nullptr;
+      if( !endp ) fml.reset();
     } else if( match(to_string(operators::Not), str, p) ) {
       fml = make_unop<operators::Not>( subformula(str, p) );
     } else if( match(to_string(operators::Box), str, p) ){
@@ -41,9 +40,9 @@ namespace pml {
     } else if( match(to_string(operators::Diamond), str, p) ){
       fml = make_unop<operators::Diamond>( subformula(str, p) );
     } else if ( match(to_string(operators::Top), str, p) ){
-      fml = new NullOp<operators::Top>();
+      fml = std::make_shared<NullOp<operators::Top>>();
     } else if ( match(to_string(operators::Bottom), str, p) ){
-      fml = new NullOp<operators::Bottom>();
+      fml = std::make_shared<NullOp<operators::Bottom>>();
     } else {
       fml = var(str, p);
     }
@@ -51,9 +50,9 @@ namespace pml {
     return fml;
   }
 
-  Formula * var(const std::string & str, std::size_t & p) {
+  Fmlp var(const std::string & str, std::size_t & p) {
     std::string name = varname(str, p);
-    return (name == "") ? nullptr : new Var(name);
+    return (name == "") ? Fmlp() : std::make_shared<Var>(name);
   }
   std::string varname(const std::string & str, std::size_t & p) {
     skip_spaces(str, p);
