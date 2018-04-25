@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "formula.hpp"
 
 /*
@@ -12,7 +13,8 @@ BNF
             | <mp> <indicatar> <indicator>
             | <us> <indicator> (<indicatar> | <formula>) <varname>
             | <g> <indicator>
-<indicator> ::= "#" <number>
+            | <name> <indicator> <theorem_name>
+<indicator> ::= "#" (<number> | <theorem_name> | "^")
 <number> = +[0-9]
 <axiom> ::= "Axiom"
 <mp> ::= "MP"
@@ -20,11 +22,17 @@ BNF
 <g> ::= "G"
 <quit> ::= "Q"
 <comment> ::= "//" <string>
+<name> ::= "Name"
+<theorem_name> ::= <varname>
 */
 
 namespace pml {
-  bool command_parser(const std::string & str, std::size_t & p, std::vector<Fmlp> & theorems);
-  int indicator(const std::string & str, std::size_t & p);
+  typedef std::vector<Fmlp> Thms;
+  typedef std::map<std::string, Fmlp> ThmDict;
+
+  bool command_parser(const std::string & str, std::size_t & p, Thms & theorems, ThmDict & thm_dict);
+  Fmlp indicator(const std::string & str, std::size_t & p, Thms & theorems, ThmDict & thm_dict);
+  std::string theorem_name(const std::string & str, std::size_t & p);
   int number(const std::string & str, std::size_t & p);
   bool is_number(char c);
 };
