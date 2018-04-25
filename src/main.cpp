@@ -6,14 +6,15 @@
 #include "pml.hpp"
 using namespace pml;
 
-void interactive_mode(std::vector<Fmlp> & theorems);
-void filechecking(const std::string & filename, std::vector<Fmlp> & theorems);
+void interactive_mode(Thms & theorems, ThmDict & thm_dict);
+void filechecking(const std::string & filename, Thms & theorems, ThmDict & thm_dict);
 int main(int argc, char *argv[]) {
-  std::vector<Fmlp> theorems;
+  Thms theorems;
+  ThmDict thm_dict;
   if( argc == 1 ) {
-    interactive_mode(theorems);
+    interactive_mode(theorems, thm_dict);
   } else if( argc == 2 ) {
-    filechecking(argv[1], theorems);
+    filechecking(argv[1], theorems, thm_dict);
   } else {
     std::cout << "Usage :" << std::endl;
     std::cout << "    pml              [interactive mode]" << std::endl;
@@ -21,7 +22,7 @@ int main(int argc, char *argv[]) {
   }
 }
 
-void interactive_mode(std::vector<Fmlp> & theorems) {
+void interactive_mode(Thms & theorems, ThmDict & thm_dict) {
   std::cout << "PML -- A Proof Assistant for Modal Logic" << std::endl;
   std::cout << "Axioms are :" << std::endl;
   for(const auto & axiom : AxiomK) {
@@ -33,7 +34,7 @@ void interactive_mode(std::vector<Fmlp> & theorems) {
   while(std::getline(std::cin, command)){
     std::size_t p = 0;
     std::size_t j = theorems.size();
-    if( command_parser(command, p, theorems) ){
+    if( command_parser(command, p, theorems, thm_dict) ){
       std::size_t i = theorems.size();
       if( j < i ) {
         std::cout << "#" << i - 1 << "  |- " << theorems[i - 1]->to_string() << std::endl;
@@ -46,7 +47,7 @@ void interactive_mode(std::vector<Fmlp> & theorems) {
   std::cout << std::endl;
 }
 
-void filechecking(const std::string & filename, std::vector<Fmlp> & theorems) {
+void filechecking(const std::string & filename, Thms & theorems, ThmDict & thm_dict) {
   std::ifstream fin;
   fin.open(filename, std::ios::in);
   if( !fin ){
@@ -59,7 +60,7 @@ void filechecking(const std::string & filename, std::vector<Fmlp> & theorems) {
   while(std::getline(fin, source)) {
     std::size_t p = 0;
     std::size_t j = theorems.size();
-    if( command_parser(source, p, theorems) ){
+    if( command_parser(source, p, theorems, thm_dict) ){
       std::size_t i = theorems.size();
       if( j < i ) {
         std::cout << "#" << i - 1 << "  |- " << theorems[i - 1]->to_string() << std::endl;
@@ -72,7 +73,7 @@ void filechecking(const std::string & filename, std::vector<Fmlp> & theorems) {
     line++;
   }
   if( failed ) {
-    std::cout << "\x1b[32mERROR\x1b[39m" << std::endl;
+    std::cout << "\x1b[31mERROR\x1b[39m" << std::endl;
   } else {
     std::cout << "\x1b[32mOK\x1b[39m" << std::endl;
   }

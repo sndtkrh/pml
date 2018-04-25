@@ -5,7 +5,7 @@
 #include "propositional_logic.hpp"
 
 namespace pml {
-  bool command_parser(const std::string & str, std::size_t & p, std::vector<Fmlp> & theorems) {
+  bool command_parser(const std::string & str, std::size_t & p, Thms & theorems, ThmDict & thm_dict) {
     bool ret = false;
     skip_spaces(str, p);
     if( match("//", str, p) ) {
@@ -32,26 +32,20 @@ namespace pml {
         }
       }
     } else if( match("MP", str, p) ) {
-      int idx0 = indicator(str, p);
-      int idx1 = indicator(str, p);
-      if( 0 <= idx0 && static_cast<std::size_t>(idx0) < theorems.size()
-        && 0 <= idx1 && static_cast<std::size_t>(idx1) < theorems.size()
-        && end(str, p) ) {
-        Fmlp g = modus_ponens(theorems[idx0], theorems[idx1]);
+      Fmlp f = indicator(str, p, theorems, thm_dict);
+      Fmlp f_g = indicator(str, p, theorems, thm_dict);
+      if( f && f_g && end(str, p) ) {
+        Fmlp g = modus_ponens(f, f_g);
         if( g ) {
           ret = true;
           theorems.push_back(g);
         }
       }
     } else if( match("US", str, p) ) {
-      int idx0 = indicator(str, p);
-      if( 0 <= idx0 && static_cast<std::size_t>(idx0) < theorems.size() ) {
-        Fmlp f = theorems[idx0];
-        Fmlp g;
-        int idx1 = indicator(str, p);
-        if( 0 <= idx1 && static_cast<std::size_t>(idx1) < theorems.size() ) {
-          g = theorems[idx1];
-        } else {
+      Fmlp f = indicator(str, p, theorems, thm_dict);
+      if( f ) {
+        Fmlp g = indicator(str, p, theorems, thm_dict);
+        if( !g ) {
           g = formula(str, p);
         }
         if( g ) {
@@ -63,21 +57,44 @@ namespace pml {
         }
       }
     } else if( match("G", str, p) ) {
-      int idx = indicator(str, p);
-      if( 0 <= idx && static_cast<std::size_t>(idx) < theorems.size() && end(str, p) ){
-        Fmlp g = generalization(theorems[idx]);
+      Fmlp f = indicator(str, p, theorems, thm_dict);
+      if( f && end(str, p) ){
         ret = true;
+        Fmlp g = generalization(f);
         theorems.push_back(g);
+      }
+    } else if( match("Name", str, p) ) {
+      ret = true;
+      Fmlp f = indicator(str, p, theorems, thm_dict);
+      skip_spaces(str, p);
+      std::string name = theorem_name(str, p);
+      skip_spaces(str, p);
+      if( end(str, p) && f && thm_dict.find(name) == thm_dict.end() ) {
+        thm_dict[name] = f;
       }
     }
     return ret;
   }
 
-  int indicator(const std::string & str, std::size_t & p) {
+  Fmlp indicator(const std::string & str, std::size_t & p, Thms & theorems, ThmDict & thm_dict) {
     skip_spaces(str, p);
-    int ret = -1;
+    Fmlp ret;
     if( match("#", str, p) ) {
-      ret = number(str, p);
+      if( is_number(str[p]) ) {
+        int idx = number(str, p);
+        if( 0 <= idx && static_cast<std::size_t>(idx) < theorems.size() ) {
+          ret = theorems[idx];
+        }
+      } else if( match("^", str, p) ) {
+        if( theorems.size() > 0 ) {
+          ret = theorems[theorems.size() - 1];
+        }
+      } else {
+        std::string thm_name = theorem_name(str, p);
+        if( thm_dict.find(thm_name) != thm_dict.end() ) {
+          ret = thm_dict[thm_name];
+        }
+      }
     }
     skip_spaces(str, p);
     return ret;
@@ -92,6 +109,10 @@ namespace pml {
     }
     skip_spaces(str, p);
     return ret;
+  }
+
+  std::string theorem_name(const std::string & str, std::size_t & p) {
+    return varname(str, p);
   }
 
   bool is_number(char c) {
