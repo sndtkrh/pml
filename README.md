@@ -1,6 +1,8 @@
 # PML -- Proof Assistant for Modal Logic
 
 これは様相論理の証明支援システムです．
+これは C++ で実装されています．
+Haskell でも[実装しました](https://github.com/sndtkrh/hpml)．
 
 ## コンパイルに必要なもの
 
